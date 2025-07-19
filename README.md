@@ -3,6 +3,8 @@
 Automate invoice handling with AI and Google Workspace tools. This project detects newly uploaded invoices in Google Drive, extracts and parses key information using a Large Language Model (LLM), and logs the data to a Google Sheet — complete with a billing summary email.  
 No more manual data entry! 🚀
 
+![Workflow](images/AI_Bot_to_Process_Invoices.png)
+
 ---
 
 ## 🔧 Workflow Overview
