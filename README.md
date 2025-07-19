@@ -4,6 +4,7 @@ Automate invoice handling with AI and Google Workspace tools. This project detec
 No more manual data entry! 🚀
 
 ![Workflow](images/AI_Bot_to_Process_Invoices.png)
+<img src="images/AI_Bot_to_Process_Invoices.png" alt="Workflow" style="width:50%; height:auto;">
 
 ---
 
