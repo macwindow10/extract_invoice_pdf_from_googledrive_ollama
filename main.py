@@ -2,13 +2,14 @@ import os
 import io
 import time
 import json
+import re
 from datetime import datetime
 from google.oauth2 import service_account
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 import fitz  # PyMuPDF
-# from langchain_community.chat_models import ChatOllama
+from langchain_ollama import ChatOllama
 from langchain_core.prompts import ChatPromptTemplate
 from googleapiclient.errors import HttpError
 
@@ -21,14 +22,14 @@ USER_TOKEN_FILE = "token.json"
 DRIVE_FOLDER_ID = "1xN6zHO5bC7mlfhlsL8isPI4a8uXsZ5AG"
 
 # Google Sheets
-SHEET_ID = "YOUR_SHEET_ID"
+SHEET_ID = "1UWyUJ-1ptfPK8744rfbf6C3iR__Ck0AnHObuS0Hplt4"
 SHEET_NAME = "InvoiceDatabase"
 
 # Poll interval
 POLL_INTERVAL_SEC = 30
 
 # Ollama model name
-OLLAMA_MODEL_PARSE = "llama3"
+OLLAMA_MODEL_PARSE = "llama3.2"
 OLLAMA_MODEL_EMAIL = "gpt-4o-mini"
 
 # Local storage for downloaded PDFs
@@ -84,7 +85,6 @@ def extract_text_from_pdf(pdf_path):
 
 
 # === Step 4 - Parse Invoice Fields with LLM ===
-
 def parse_invoice_fields(raw_text):
     ollama = ChatOllama(model=OLLAMA_MODEL_PARSE)
 
@@ -146,7 +146,6 @@ def append_invoice_data(json_data):
 
 
 # === Step 6 - Generate Email Notification ===
-
 def generate_billing_email(json_data):
     ollama = ChatOllama(model=OLLAMA_MODEL_EMAIL)
 
@@ -191,14 +190,27 @@ if __name__ == "__main__":
 
                 # Step 3: Extract text
                 raw_text = extract_text_from_pdf(local_path)
+                # print("Extracted text:", raw_text)
                 print("Extracted text length:", len(raw_text))
 
                 # Step 4: Parse invoice fields
                 parsed_json_str = parse_invoice_fields(raw_text)
-                                
+                # print("parsed_json_str:", parsed_json_str)
+                
+                # string parsing
+                json_str = ''
+                start_index = parsed_json_str.find("{")
+                end_index = parsed_json_str.rfind("}") + 1  # Include the last }
+                if start_index != -1 and end_index != -1:
+                    json_str = parsed_json_str[start_index:end_index]
+                    print("json_str:", json_str)                    
+                else:
+                    print("JSON block not found in the string.")
+                
                 parsed_json = {}
                 try:
-                    parsed_json = json.loads(parsed_json_str)
+                    parsed_json = json.loads(json_str)
+                    print("parsed_json:", parsed_json)
                 except json.JSONDecodeError:
                     print("Warning: Could not parse JSON from LLM response.")
                     print(parsed_json_str)
