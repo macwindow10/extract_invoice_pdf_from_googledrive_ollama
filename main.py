@@ -147,7 +147,8 @@ def append_invoice_data(json_data):
 
 # === Step 6 - Generate Email Notification ===
 def generate_billing_email(json_data):
-    ollama = ChatOllama(model=OLLAMA_MODEL_EMAIL)
+    # ollama = ChatOllama(model=OLLAMA_MODEL_EMAIL)
+    ollama = ChatOllama(model=OLLAMA_MODEL_PARSE)
 
     prompt = f"""
 You are "Greenie" from Green Grass Corp.
